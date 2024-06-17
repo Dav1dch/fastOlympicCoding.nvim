@@ -113,7 +113,7 @@ function M.valid()
 				subTotal = subTotal + 1
 				output[j] = output[j]:gsub("%s+", "")
 				test[j] = test[j]:gsub("%s+", "")
-				result = result .. output[j] .. " " .. test[j]
+				-- result = result .. output[j] .. " " .. test[j]
 				if output[j] == test[j] then
 					subCount = subCount + 1
 					-- result = result .. " \\033[0;30;47mCorrect!\\033[m \\n \n"
@@ -130,7 +130,7 @@ function M.valid()
 				-- result = result .. "SubTest " .. i .. " FAILED!\\n \n"
 				result = result .. "SubTest " .. i .. " \\033[0;41m\\033[30mFAILED!\\033[m \\n \n "
 			end
-			result = result .. "\\n \\n \n\n"
+			result = result .. "\\n \n"
 		end
 	end
 	if M.count == count then
