@@ -40,6 +40,21 @@ function M.get_tests()
 	uv.run("nowait")
 end
 
+function M.valid()
+	local current_file = vim.fn.expand("%")
+	os.execute("g++ " .. current_file .. " --std=c++11 -o out ")
+	if M.count == 0 then
+		local handle = io.popen("ls -la /tmp/ | grep input | wc -l")
+		local result = handle:read("*a")
+		handle:close()
+		str = result:gsub("%s+", "")
+		M.count = tonumber(str)
+	end
+	-- vim.print(M.count)
+	for i = 0, M.count do
+		os.execute("./out < /tmp/code_" .. i .. "_input >> /tmp/code_" .. i .. "_test")
+	end
+end
 
 function M.setup()
 	vim.api.nvim_create_user_command("GetTests", function()
