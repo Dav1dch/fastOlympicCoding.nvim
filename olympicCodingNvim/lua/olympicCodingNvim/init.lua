@@ -40,6 +40,45 @@ function M.get_tests()
 	uv.run("nowait")
 end
 
+local pattern = "olympic_"
+
+local function closeRunner(bufname)
+	bufname = bufname or pattern .. vim.fn.expand("%:t:r")
+
+	local current_buf = vim.fn.bufname("%")
+	if string.find(current_buf, pattern) then
+		vim.cmd("bwipeout!")
+	else
+		local bufid = vim.fn.bufnr(bufname)
+		if bufid ~= -1 then
+			vim.cmd("bwipeout!" .. bufid)
+		end
+	end
+end
+
+local fn = function()
+	local prefix = "bo vert 32 new"
+	local bufname = bufname or pattern .. vim.fn.expand("%:t:r")
+	local set_bufname = "file " .. bufname
+	local current_wind_id = vim.api.nvim_get_current_win()
+	closeRunner(bufname)
+	vim.cmd(prefix)
+	vim.fn.termopen("cat /tmp/output")
+	vim.cmd("norm G")
+	vim.opt_local.relativenumber = false
+	vim.opt_local.number = false
+	vim.cmd(set_bufname)
+	-- vim.api.nvim_buf_set_option(0, "filetype", "crunner")
+	if prefix ~= "tabnew" then
+		vim.bo.buflisted = false
+	end
+	-- if opt.focus then
+	-- 	vim.cmd(opt.insert_prefix)
+	-- else
+	vim.fn.win_gotoid(current_wind_id)
+	-- end
+end
+
 function M.valid()
 	local current_file = vim.fn.expand("%")
 	os.execute("g++ " .. current_file .. " --std=c++11 -o out ")
@@ -99,6 +138,7 @@ function M.valid()
 	end
 	fpresult:write(result)
 	fpresult:close()
+	fn()
 end
 
 function M.setup()
