@@ -63,7 +63,7 @@ local fn = function()
 	local current_wind_id = vim.api.nvim_get_current_win()
 	closeRunner(bufname)
 	vim.cmd(prefix)
-	vim.fn.termopen("cat /tmp/output")
+	vim.fn.termopen("echo $(cat /tmp/output)")
 	vim.cmd("norm G")
 	vim.opt_local.relativenumber = false
 	vim.opt_local.number = false
@@ -116,25 +116,28 @@ function M.valid()
 				result = result .. output[j] .. " " .. test[j]
 				if output[j] == test[j] then
 					subCount = subCount + 1
-					result = result .. " Correct! \n"
+					-- result = result .. " \\033[0;30;47mCorrect!\\033[m \\n \n"
 				else
-					result = result .. " Wrong! \n"
+					-- result = result .. " Wrong! \\n \n"
+					result = result .. " " .. j .. " \\033[0;30;41mWrong!\\033[m \\n \n"
 				end
 			end
-			result = result .. "\n"
+			result = result .. "\\n \n"
 			if subCount == subTotal then
 				count = count + 1
-				result = result .. "SubTest " .. i .. " PASSED!\n"
+				result = result .. "SubTest " .. i .. " \\033[0;47m\\033[30mPASSED!\\033[m \\n \n "
 			else
-				result = result .. "SubTest " .. i .. " FAILED!\n"
+				-- result = result .. "SubTest " .. i .. " FAILED!\\n \n"
+				result = result .. "SubTest " .. i .. " \\033[0;41m\\033[30mFAILED!\\033[m \\n \n "
 			end
-			result = result .. "\n\n"
+			result = result .. "\\n \\n \n\n"
 		end
 	end
 	if M.count == count then
-		result = result .. "Test PASSED!\n"
+		result = result .. "Test \\033[1;42m\\033[30mPASSED!\\033[m\n"
 	else
-		result = result .. "Test FAILED!\n"
+		-- result = result .. "Test FAILED!\n"
+		result = result .. "Test \\033[1;41m\\033[30mFAILED!\\033[m\n"
 	end
 	fpresult:write(result)
 	fpresult:close()
