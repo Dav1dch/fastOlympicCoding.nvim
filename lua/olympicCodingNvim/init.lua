@@ -96,12 +96,18 @@ function M.valid()
 	for i = 1, M.count do
 		os.execute("./out < /tmp/code_" .. i .. "_input > /tmp/code_" .. i .. "_test")
 		local fpoutput = assert(io.open("/tmp/code_" .. i .. "_output", "r"))
+		local fpinput = assert(io.open("/tmp/code_" .. i .. "_input", "r"))
 		local fptest = assert(io.open("/tmp/code_" .. i .. "_test", "r"))
 		local output = {}
+		-- local input = {}
 		local test = {}
 		for line in fpoutput:lines() do
 			output[#output] = line
 		end
+
+		-- for line in fpinput:lines() do
+		-- 	input[#input] = line
+		-- end
 
 		for line in fptest:lines() do
 			test[#test] = line
@@ -118,8 +124,13 @@ function M.valid()
 					subCount = subCount + 1
 					-- result = result .. " \\033[0;30;47mCorrect!\\033[m \\n \n"
 				else
+					for line in fpinput:lines() do
+						result = result .. line .. "\\n"
+						-- input[#input] = line
+					end
 					-- result = result .. " Wrong! \\n \n"
-					result = result .. " " .. j .. " \\033[0;30;41mWrong!\\033[m \\n \n"
+					--result = result .. " " .. j .. " \\033[0;30;41mWrong!\\033[m \\n \n"
+					result = result .. "\\n" .. output[j] .. " " .. "\\033[0;30;41m" .. test[j] .. "\\033[m \\n \n"
 				end
 			end
 			result = result .. "\\n \n"
